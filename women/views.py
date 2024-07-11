@@ -4,57 +4,66 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 
-menu = ['О сайте', 'Добавить статью', 'Обратная связь', 'Войти']
+menu = [{'title': "О сайте", 'url_name': 'about'},
+        {'title': "Добавить статью", 'url_name': 'add_page'},
+        {'title': "Обратная связь", 'url_name': 'contact'},
+        {'title': "Войти", 'url_name': 'login'}
+]
+
+data_db = [
+    {'id': 1, 'title': 'Анджелина Джоли', 'content': '''<h1>Анджелина Джоли</h1> (англ. Angelina Jolie[7], при рождении Войт (англ. Voight), ранее Джоли Питт (англ. Jolie Pitt); род. 4 июня 1975, Лос-Анджелес, Калифорния, США) — американская актриса кино, телевидения и озвучивания, кинорежиссёр, сценаристка, продюсер, фотомодель, посол доброй воли ООН.
+    Обладательница премии «Оскар», трёх премий «Золотой глобус» (первая актриса в истории, три года подряд выигравшая премию) и двух «Премий Гильдии киноактёров США».''',
+     'is_published': True},
+    {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_published': False},
+    {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулия Робертс', 'is_published': True},
+]
+
+cats_db = [
+    {'id': 1, 'name': 'Актрисы'},
+    {'id': 2, 'name': 'Певицы'},
+    {'id': 3, 'name': 'Спортсменки'},
+]
 
 
-class MyClass:
-    def __init__(self, a, b):
-        self.a = a
-        self.b = b
-
-
-def index(request): # HttpRequest
-    # t = render_to_string('women/index.html')
-    # return HttpResponse(t)
+def index(request):
     data = {
         'title': 'Главная страница',
         'menu': menu,
-        'float': 28.56,
-        'lst': [1, 2, 'abc', True],
-        'set': {1, 2, 3, 5},
-        'dict': {'key_1': 'value_1', 'key_2': 'value_2'},
-        'obj': MyClass(10, 20),
-        'url': slugify('The main page')
+        'posts': data_db,
+        'cat_selected': 0,
     }
     return render(request, 'women/index.html', context=data)
 
 
 def about(request):
-    return render(request, 'women/about.html', {'title': 'О сайте'})
+    return render(request, 'women/about.html', {'title': 'О сайте', 'menu': menu})
 
 
-def categories(request, cat_id):
-    return HttpResponse(f'<h1>Статьи по категориям</h1><p>id: {cat_id}</p>')
+def show_post(request, post_id):
+    return HttpResponse(f"Отображение статьи с id = {post_id}")
 
 
-def categories_by_slug(request, cat_slug):
-    if request.GET:
-        print(request.GET)
-    return HttpResponse(f'<h1>Статьи по категориям</h1><p>slug: {cat_slug}</p>')
+def addpage(request):
+    return HttpResponse("Добавление статьи")
 
 
-def archive(request, year):
-    if year > 2023:
-        uri = reverse('cats', args=('sport', ))
-        # return redirect('/', permanent=True)
-        # return redirect(index)
-        # return redirect('home')
-        # return redirect('cats', 'music')
-        # return redirect(uri)
-        # return HttpResponseRedirect('/')
-        return HttpResponsePermanentRedirect(uri)
-    return HttpResponse(f'<h1>Архив по годам</h1><p>{year}</p>')
+def contact(request):
+    return HttpResponse("Обратная связь")
+
+
+def login(request):
+    return HttpResponse("Авторизация")
+
+
+def show_category(request, cat_id):
+    data = {
+        'title': 'Отображение по рубоикам',
+        'menu': menu,
+        'posts': data_db,
+        'cat_selected': cat_id,
+    }
+    return render(request, 'women/index.html', context=data)
 
 
 def page_not_found(request, exception):
-    return HttpResponseNotFound('<h1>Страница не найдена</h1>')
+    return HttpResponseNotFound("<h1>Страница не найдена</h1>")
