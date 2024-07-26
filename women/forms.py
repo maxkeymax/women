@@ -7,12 +7,12 @@ from .models import Category, Husband, Women
 
 
 @deconstructible
-class RussianValidator():
+class RussianValidator:
     ALLOWED_CHARS = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЫЪЭЮЯабвгдеёжзийклмнопрстуфхцчшщбыъэюя0123456789- "
     code = 'russian'
 
     def __init__(self, message=None):
-        self.message = message if message else 'Должны присутствовать только русские символы, дефис и пробел.'
+        self.message = message if message else "Должны присутствовать только русские символы, дефис и пробел."
 
     def __call__(self, value, *args, **kwargs):
         if not (set(value) <= set(self.ALLOWED_CHARS)):
@@ -20,8 +20,9 @@ class RussianValidator():
 
 
 class AddPostForm(forms.ModelForm):
-    cat = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label='Категория не выбрана', label='Категории')
-    husband = forms.ModelChoiceField(queryset=Husband.objects.all(), empty_label='Не замужем', required=False, label='Муж')
+    cat = forms.ModelChoiceField(queryset=Category.objects.all(), empty_label="Категория не выбрана", label="Категории")
+    husband = forms.ModelChoiceField(queryset=Husband.objects.all(), empty_label="Не замужем", required=False, label="Муж")
+
     class Meta:
         model = Women
         fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'husband', 'tags']
@@ -34,10 +35,10 @@ class AddPostForm(forms.ModelForm):
     def clean_title(self):
         title = self.cleaned_data['title']
         if len(title) > 50:
-            raise ValidationError('Длина привышает 50 символов')
+            raise ValidationError("Длина превышает 50 символов")
 
         return title
 
 
 class UploadFileForm(forms.Form):
-    file = forms.ImageField(label='Файл')
+    file = forms.ImageField(label="Файл")
