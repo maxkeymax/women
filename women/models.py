@@ -43,6 +43,7 @@ class Women(models.Model):
                                    null=True, blank=True, related_name='wuman', verbose_name="Муж")
     author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='posts', null=True, default=None)
 
+
     objects = models.Manager()
     published = PublishedManager()
 

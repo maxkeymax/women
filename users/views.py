@@ -7,7 +7,8 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
-from users.forms import LoginUserForm, RegisterUserForm, ProfileUserForm, UserPasswordChangeForm
+from sitewomen import settings
+from .forms import LoginUserForm, RegisterUserForm, ProfileUserForm, UserPasswordChangeForm
 
 
 class LoginUser(LoginView):
@@ -18,10 +19,11 @@ class LoginUser(LoginView):
     # def get_success_url(self):
     #     return reverse_lazy('home')
 
+
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = 'users/register.html'
-    extra_context = {'title': 'Регистрация'}
+    extra_context = {'title': "Регистрация"}
     success_url = reverse_lazy('users:login')
 
 
@@ -29,10 +31,13 @@ class ProfileUser(LoginRequiredMixin, UpdateView):
     model = get_user_model()
     form_class = ProfileUserForm
     template_name = 'users/profile.html'
-    extra_context = {'title': 'Профиль пользователя'}
+    extra_context = {
+        'title': "Профиль пользователя",
+        'default_image': settings.DEFAULT_USER_IMAGE,
+    }
 
     def get_success_url(self):
-        return reverse_lazy('users/profile')
+        return reverse_lazy('users:profile')
 
     def get_object(self, queryset=None):
         return self.request.user
